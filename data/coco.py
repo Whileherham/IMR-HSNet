@@ -1,6 +1,5 @@
 r""" COCO-20i few-shot semantic segmentation dataset """
 import os
-import pdb
 import pickle
 
 from torch.utils.data import Dataset
@@ -39,16 +38,19 @@ class DatasetCOCO(Dataset):
     def __getitem__(self, idx):
         # ignores idx during training & testing and perform uniform sampling over object classes to form an episode
         # (due to the large size of the COCO dataset)
-        query_img, query_mask, support_imgs, support_masks, query_name, support_names, class_sample, org_qry_imsize = self.load_frame()
+        query_img, query_mask, support_imgs, support_masks, \
+            query_name, support_names, class_sample, org_qry_imsize = self.load_frame()
 
         query_img = self.transform(query_img)
         query_mask = query_mask.float()
         if not self.use_original_imgsize:
-            query_mask = F.interpolate(query_mask.unsqueeze(0).unsqueeze(0).float(), query_img.size()[-2:], mode='nearest').squeeze()
+            query_mask = F.interpolate(
+                query_mask.unsqueeze(0).unsqueeze(0).float(), query_img.size()[-2:], mode='nearest').squeeze()
 
         support_imgs = torch.stack([self.transform(support_img) for support_img in support_imgs])
         for midx, smask in enumerate(support_masks):
-            support_masks[midx] = F.interpolate(smask.unsqueeze(0).unsqueeze(0).float(), support_imgs.size()[-2:], mode='nearest').squeeze()
+            support_masks[midx] = F.interpolate(
+                smask.unsqueeze(0).unsqueeze(0).float(), support_imgs.size()[-2:], mode='nearest').squeeze()
         support_masks = torch.stack(support_masks)
         query_cam_path = self.cam_path + query_name + '--' + str(class_sample) + '.pt'
         query_cam = torch.load(query_cam_path) # 50 50
@@ -60,7 +62,6 @@ class DatasetCOCO(Dataset):
             support_cam = torch.load(support_cam_path).unsqueeze(0)  # 1 50 50
             support_cams.append(support_cam)
         support_cams = torch.cat(support_cams, dim=0)  # nshot 50 50
-
 
         batch = {'query_img': query_img,
                  'query_mask': query_mask,
@@ -116,8 +117,10 @@ class DatasetCOCO(Dataset):
         support_names = []
         while True:  # keep sampling support set if query == support
             support_name = np.random.choice(self.img_metadata_classwise[class_sample], 1, replace=False)[0]
-            if query_name != support_name: support_names.append(support_name)
-            if len(support_names) == self.shot: break
+            if query_name != support_name:
+                support_names.append(support_name)
+            if len(support_names) == self.shot:
+                break
 
         support_imgs = []
         support_masks = []
@@ -128,5 +131,5 @@ class DatasetCOCO(Dataset):
             support_mask[support_mask == class_sample + 1] = 1
             support_masks.append(support_mask)
 
-        return query_img, query_mask, support_imgs, support_masks, query_name, support_names, class_sample, org_qry_imsize
-
+        return \
+            query_img, query_mask, support_imgs, support_masks, query_name, support_names, class_sample, org_qry_imsize

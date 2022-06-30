@@ -36,13 +36,15 @@ class DatasetFSS(Dataset):
         query_img, query_mask, support_imgs, support_masks = self.load_frame(query_name, support_names)
 
         query_img = self.transform(query_img)
-        query_mask = F.interpolate(query_mask.unsqueeze(0).unsqueeze(0).float(), query_img.size()[-2:], mode='nearest').squeeze()
+        query_mask = F.interpolate(
+            query_mask.unsqueeze(0).unsqueeze(0).float(), query_img.size()[-2:], mode='nearest').squeeze()
 
         support_imgs = torch.stack([self.transform(support_img) for support_img in support_imgs])
 
         support_masks_tmp = []
         for smask in support_masks:
-            smask = F.interpolate(smask.unsqueeze(0).unsqueeze(0).float(), support_imgs.size()[-2:], mode='nearest').squeeze()
+            smask = F.interpolate(
+                smask.unsqueeze(0).unsqueeze(0).float(), support_imgs.size()[-2:], mode='nearest').squeeze()
             support_masks_tmp.append(smask)
         support_masks = torch.stack(support_masks_tmp)
 
@@ -65,7 +67,8 @@ class DatasetFSS(Dataset):
         query_id = query_name.split('/')[-1].split('.')[0]
         query_name = os.path.join(os.path.dirname(query_name), query_id) + '.png'
         support_ids = [name.split('/')[-1].split('.')[0] for name in support_names]
-        support_names = [os.path.join(os.path.dirname(name), sid) + '.png' for name, sid in zip(support_names, support_ids)]
+        support_names = [os.path.join(os.path.dirname(name), sid) + '.png'
+                         for name, sid in zip(support_names, support_ids)]
 
         query_mask = self.read_mask(query_name)
         support_masks = [self.read_mask(name) for name in support_names]
@@ -90,8 +93,10 @@ class DatasetFSS(Dataset):
         while True:  # keep sampling support set if query == support
             support_name = np.random.choice(range(1, 11), 1, replace=False)[0]
             support_name = os.path.join(os.path.dirname(query_name), str(support_name)) + '.jpg'
-            if query_name != support_name: support_names.append(support_name)
-            if len(support_names) == self.shot: break
+            if query_name != support_name:
+                support_names.append(support_name)
+            if len(support_names) == self.shot:
+                break
 
         return query_name, support_names, class_sample
 

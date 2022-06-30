@@ -75,7 +75,9 @@ class SimpleTokenizer(object):
         self.decoder = {v: k for k, v in self.encoder.items()}
         self.bpe_ranks = dict(zip(merges, range(len(merges))))
         self.cache = {'<|startoftext|>': '<|startoftext|>', '<|endoftext|>': '<|endoftext|>'}
-        self.pat = re.compile(r"""<\|startoftext\|>|<\|endoftext\|>|'s|'t|'re|'ve|'m|'ll|'d|[\p{L}]+|[\p{N}]|[^\s\p{L}\p{N}]+""", re.IGNORECASE)
+        self.pat = re.compile(
+            r"""<\|startoftext\|>|<\|endoftext\|>|'s|'t|'re|'ve|'m|'ll|'d|[\p{L}]+|[\p{N}]|[^\s\p{L}\p{N}]+""",
+            re.IGNORECASE)
 
     def bpe(self, token):
         if token in self.cache:
@@ -94,6 +96,7 @@ class SimpleTokenizer(object):
             new_word = []
             i = 0
             while i < len(word):
+                # noinspection PyBroadException
                 try:
                     j = word.index(first, i)
                     new_word.extend(word[i:j])

@@ -4,7 +4,11 @@ import torch
 from torchvision.transforms import Compose, Normalize, ToTensor
 
 
-def preprocess_image(img: np.ndarray, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]) -> torch.Tensor:
+def preprocess_image(img: np.ndarray, mean=None, std=None) -> torch.Tensor:
+    if mean is None:
+        mean = [0.5, 0.5, 0.5]
+    if std is None:
+        std = [0.5, 0.5, 0.5]
     preprocessing = Compose([
         ToTensor(),
         Normalize(mean=mean, std=std)

@@ -63,6 +63,7 @@ class GuidedBackpropReLUModel:
         print("b")
 
     def recursive_replace_guidedrelu_with_relu(self, module_top):
+        # noinspection PyBroadException
         try:
             for idx, module in module_top._modules.items():
                 self.recursive_replace_guidedrelu_with_relu(module)

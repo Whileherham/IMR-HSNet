@@ -24,10 +24,12 @@ class Visualizer:
         cls.std_img = [0.229, 0.224, 0.225]
         cls.to_pil = transforms.ToPILImage()
         cls.vis_path = './vis/'
-        if not os.path.exists(cls.vis_path): os.makedirs(cls.vis_path)
+        if not os.path.exists(cls.vis_path):
+            os.makedirs(cls.vis_path)
 
     @classmethod
-    def visualize_prediction_batch(cls, spt_img_b, spt_mask_b, qry_img_b, qry_mask_b, pred_mask_b, cls_id_b, batch_idx, iou_b=None):
+    def visualize_prediction_batch(
+            cls, spt_img_b, spt_mask_b, qry_img_b, qry_mask_b, pred_mask_b, cls_id_b, batch_idx, iou_b=None):
         spt_img_b = utils.to_cpu(spt_img_b)
         spt_mask_b = utils.to_cpu(spt_mask_b)
         qry_img_b = utils.to_cpu(qry_img_b)
@@ -38,7 +40,8 @@ class Visualizer:
         for sample_idx, (spt_img, spt_mask, qry_img, qry_mask, pred_mask, cls_id) in \
                 enumerate(zip(spt_img_b, spt_mask_b, qry_img_b, qry_mask_b, pred_mask_b, cls_id_b)):
             iou = iou_b[sample_idx] if iou_b is not None else None
-            cls.visualize_prediction(spt_img, spt_mask, qry_img, qry_mask, pred_mask, cls_id, batch_idx, sample_idx, True, iou)
+            cls.visualize_prediction(
+                spt_img, spt_mask, qry_img, qry_mask, pred_mask, cls_id, batch_idx, sample_idx, True, iou)
 
     @classmethod
     def to_numpy(cls, tensor, type):
@@ -50,7 +53,8 @@ class Visualizer:
             raise Exception('Undefined tensor type: %s' % type)
 
     @classmethod
-    def visualize_prediction(cls, spt_imgs, spt_masks, qry_img, qry_mask, pred_mask, cls_id, batch_idx, sample_idx, label, iou=None):
+    def visualize_prediction(
+            cls, spt_imgs, spt_masks, qry_img, qry_mask, pred_mask, cls_id, batch_idx, sample_idx, label, iou=None):
 
         spt_color = cls.colors['blue']
         qry_color = cls.colors['red']
@@ -59,13 +63,15 @@ class Visualizer:
         spt_imgs = [cls.to_numpy(spt_img, 'img') for spt_img in spt_imgs]
         spt_pils = [cls.to_pil(spt_img) for spt_img in spt_imgs]
         spt_masks = [cls.to_numpy(spt_mask, 'mask') for spt_mask in spt_masks]
-        spt_masked_pils = [Image.fromarray(cls.apply_mask(spt_img, spt_mask, spt_color)) for spt_img, spt_mask in zip(spt_imgs, spt_masks)]
+        spt_masked_pils = [Image.fromarray(
+            cls.apply_mask(spt_img, spt_mask, spt_color)) for spt_img, spt_mask in zip(spt_imgs, spt_masks)]
 
         qry_img = cls.to_numpy(qry_img, 'img')
         qry_pil = cls.to_pil(qry_img)
         qry_mask = cls.to_numpy(qry_mask, 'mask')
         pred_mask = cls.to_numpy(pred_mask, 'mask')
-        pred_masked_pil = Image.fromarray(cls.apply_mask(qry_img.astype(np.uint8), pred_mask.astype(np.uint8), pred_color))
+        pred_masked_pil = \
+            Image.fromarray(cls.apply_mask(qry_img.astype(np.uint8), pred_mask.astype(np.uint8), pred_color))
         qry_masked_pil = Image.fromarray(cls.apply_mask(qry_img.astype(np.uint8), qry_mask.astype(np.uint8), qry_color))
 
         merged_pil = cls.merge_image_pair(spt_masked_pils + [pred_masked_pil, qry_masked_pil])

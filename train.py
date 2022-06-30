@@ -25,9 +25,10 @@ def train(epoch, model, dataloader, optimizer, training, stage):
 
         # 1. Hypercorrelation Squeeze Networks forward pass
         batch = utils.to_cuda(batch)
-        logit_mask_q, logit_mask_s, losses = model(query_img=batch['query_img'],support_img=batch['support_imgs'].squeeze(1),
-                                                   support_cam=batch['support_cams'].squeeze(1), query_cam=batch['query_cam'], stage=stage,
-                                                   query_mask=batch['query_mask'], support_mask=batch['support_masks'].squeeze(1))
+        logit_mask_q, logit_mask_s, losses = model(
+            query_img=batch['query_img'],support_img=batch['support_imgs'].squeeze(1),
+            support_cam=batch['support_cams'].squeeze(1), query_cam=batch['query_cam'], stage=stage,
+            query_mask=batch['query_mask'], support_mask=batch['support_masks'].squeeze(1))
         pred_mask_q = logit_mask_q.argmax(dim=1)
 
         # 2. Compute loss & update model parameters
@@ -98,9 +99,11 @@ if __name__ == '__main__':
     best_val_miou = float('-inf')
     best_val_loss = float('inf')
     for epoch in range(args.niter):
-        trn_loss, trn_miou, trn_fb_iou = train(epoch, model, dataloader_trn, optimizer, training=True, stage=args.stage)
+        trn_loss, trn_miou, trn_fb_iou = train(epoch, model, dataloader_trn, optimizer, training=True,
+                                               stage=args.stage)
         with torch.no_grad():
-            val_loss, val_miou, val_fb_iou = train(epoch, model, dataloader_val, optimizer, training=False, stage=args.stage)
+            val_loss, val_miou, val_fb_iou = train(epoch, model, dataloader_val, optimizer, training=False,
+                                                   stage=args.stage)
         # Save the best model
         if val_miou > best_val_miou:
             best_val_miou = val_miou

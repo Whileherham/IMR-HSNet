@@ -56,7 +56,8 @@ class HypercorrSqueezeNetwork(nn.Module):
     def forward(self, query_img, support_img, support_mask):
         with torch.no_grad():
             query_feats = self.extract_feats(query_img, self.backbone, self.feat_ids, self.bottleneck_ids, self.lids)
-            support_feats = self.extract_feats(support_img, self.backbone, self.feat_ids, self.bottleneck_ids, self.lids)
+            support_feats = self.extract_feats(
+                support_img, self.backbone, self.feat_ids, self.bottleneck_ids, self.lids)
             support_feats = self.mask_feature(support_feats, support_mask.clone())
             corr = Correlation.multilayer_correlation(query_feats, support_feats, self.stack_ids)
 
@@ -68,7 +69,8 @@ class HypercorrSqueezeNetwork(nn.Module):
 
     def mask_feature(self, features, support_mask):
         for idx, feature in enumerate(features):
-            mask = F.interpolate(support_mask.unsqueeze(1).float(), feature.size()[2:], mode='bilinear', align_corners=True)
+            mask = F.interpolate(
+                support_mask.unsqueeze(1).float(), feature.size()[2:], mode='bilinear', align_corners=True)
             features[idx] = features[idx] * mask
         return features
 
@@ -84,7 +86,8 @@ class HypercorrSqueezeNetwork(nn.Module):
                 logit_mask = F.interpolate(logit_mask, org_qry_imsize, mode='bilinear', align_corners=True)
 
             logit_mask_agg += logit_mask.argmax(dim=1).clone()
-            if nshot == 1: return logit_mask_agg
+            if nshot == 1:
+                return logit_mask_agg
 
         # Average & quantize predictions given threshold (=0.5)
         bsz = logit_mask_agg.size(0)

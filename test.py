@@ -115,7 +115,8 @@ if __name__ == '__main__':
     model.to(device)
 
     # Load trained model
-    if args.load == '': raise Exception('Pretrained model not specified.')
+    if args.load == '':
+        raise Exception('Pretrained model not specified.')
     model.load_state_dict(torch.load(args.load))
 
     # Helper classes (for testing) initialization
