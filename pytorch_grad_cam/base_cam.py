@@ -55,7 +55,6 @@ class BaseCAM:
 
         weighted_activations = weights[:, :, None, None] * activations
 
-
         # 不管n=?  activation一样
         if eigen_smooth:
             cam = get_2d_projection(weighted_activations)
@@ -69,11 +68,11 @@ class BaseCAM:
         if self.cuda:
             input_tensor = input_tensor.cuda()
 
-        if self.compute_input_gradient: # False
+        if self.compute_input_gradient:  # False
             input_tensor = torch.autograd.Variable(input_tensor,
                                                    requires_grad=True)
 
-        output = self.activations_and_grads(input_tensor) #tensor.shape  1,N
+        output = self.activations_and_grads(input_tensor)  # tensor.shape  1,N
 
         if isinstance(target_category, int):
             target_category = [target_category] * input_tensor.size(0)
@@ -81,9 +80,9 @@ class BaseCAM:
         if target_category is None:
             target_category = np.argmax(output.cpu().data.numpy(), axis=-1)
         else:
-            assert(len(target_category) == input_tensor.size(0))
+            assert (len(target_category) == input_tensor.size(0))
 
-        if self.uses_gradients: # True
+        if self.uses_gradients:  # True
             self.model.zero_grad()
 
             loss = self.get_loss(output, target_category)
@@ -131,7 +130,7 @@ class BaseCAM:
                                      layer_grads,
                                      eigen_smooth)
             # pdb.set_trace()
-            cam[cam<0]=0 # works like mute the min-max scale in the function of scale_cam_image
+            cam[cam < 0] = 0  # works like mute the min-max scale in the function of scale_cam_image
             scaled = self.scale_cam_image(cam, target_size)
             cam_per_target_layer.append(scaled[:, None, :])
 
@@ -150,11 +149,10 @@ class BaseCAM:
             # WHH ADD
             # pdb.set_trace()
 
-
             img = img - np.min(img)
             img = img / (1e-7 + np.max(img))
             if target_size is not None:
-                img = np.float32(img) #whh add here不然就报错
+                img = np.float32(img)  # whh add here不然就报错
                 img = cv2.resize(img, target_size)
             result.append(img)
         result = np.float32(result)

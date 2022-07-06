@@ -58,12 +58,11 @@ class DatasetPASCAL(Dataset):
         support_masks = torch.stack(support_masks)
         support_ignore_idxs = torch.stack(support_ignore_idxs)
 
-
         if self.split == 'val':
             query_cam_path = self.cam_val_path + query_name + '--' + str(class_sample) + '.pt'
             query_cam = torch.load(query_cam_path)
             nshot = len(support_names)
-            support_cams= []
+            support_cams = []
             for nn in range(nshot):
                 support_cam_path = self.cam_val_path + support_names[nn] + '--' + str(class_sample) + '.pt'
                 support_cam = torch.load(support_cam_path).unsqueeze(0)
@@ -75,11 +74,10 @@ class DatasetPASCAL(Dataset):
             nshot = len(support_names)
             support_cams = []
             for nn in range(nshot):
-                support_cam_path = self.cam_train_path+ support_names[nn] + '--' + str(class_sample) + '.pt'
+                support_cam_path = self.cam_train_path + support_names[nn] + '--' + str(class_sample) + '.pt'
                 support_cam = torch.load(support_cam_path).unsqueeze(0)  # 1 50 50
                 support_cams.append(support_cam)
             support_cams = torch.cat(support_cams, dim=0)  # nshot 50 50
-
 
         batch = {'query_img': query_img,
                  'query_mask': query_mask,
@@ -93,7 +91,6 @@ class DatasetPASCAL(Dataset):
                  'class_id': torch.tensor(class_sample),
                  'query_cam': query_cam,
                  'support_cams': support_cams}
-
 
         return batch
 

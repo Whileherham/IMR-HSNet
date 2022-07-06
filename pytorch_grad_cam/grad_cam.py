@@ -2,6 +2,7 @@ import numpy as np
 from pytorch_grad_cam.base_cam import BaseCAM
 import pdb
 
+
 class GradCAM(BaseCAM):
     def __init__(self, model, target_layers, use_cuda=False,
                  reshape_transform=None):

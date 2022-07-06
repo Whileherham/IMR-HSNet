@@ -26,7 +26,7 @@ class DatasetCOCO(Dataset):
         self.img_metadata_classwise = self.build_img_metadata_classwise()
         self.img_metadata = self.build_img_metadata()
 
-        assert cam_train_path==cam_val_path
+        assert cam_train_path == cam_val_path
         # This is because, the query name of COCO includes "train2014-img" pr "val2014-img"
         # But VOC only includes "img"
         self.cam_path = cam_train_path
@@ -53,7 +53,7 @@ class DatasetCOCO(Dataset):
                 smask.unsqueeze(0).unsqueeze(0).float(), support_imgs.size()[-2:], mode='nearest').squeeze()
         support_masks = torch.stack(support_masks)
         query_cam_path = self.cam_path + query_name + '--' + str(class_sample) + '.pt'
-        query_cam = torch.load(query_cam_path) # 50 50
+        query_cam = torch.load(query_cam_path)  # 50 50
 
         nshot = len(support_names)
         support_cams = []

@@ -22,6 +22,7 @@ COCO_CLASSES = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
                'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock',
                'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush']
 
+
 def get_cam_from_alldata(clip_model, preprocess, split='train', d0=None, d1=None, d2=None, d3=None,
                                datapath=None, campath=None):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

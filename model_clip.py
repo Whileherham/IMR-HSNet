@@ -92,7 +92,6 @@ class AttentionPool2d(nn.Module):
             need_weights=False
         )
 
-
         return x[0]
 
 
@@ -146,14 +145,15 @@ class ModifiedResNet(nn.Module):
             return x
 
         x = x.type(self.conv1.weight.dtype)
-        x = stem(x) #torch.Size([1, 64, 56, 56])
-        x = self.layer1(x) #torch.Size([1, 256, 56, 56])
-        x = self.layer2(x) #torch.Size([1, 512, 28, 28])
-        x = self.layer3(x) #torch.Size([1, 1024, 14, 14])
-        x = self.layer4(x) #torch.Size([1, 2048, 7, 7])
+        x = stem(x)  # torch.Size([1, 64, 56, 56])
+        x = self.layer1(x)  # torch.Size([1, 256, 56, 56])
+        x = self.layer2(x)  # torch.Size([1, 512, 28, 28])
+        x = self.layer3(x)  # torch.Size([1, 1024, 14, 14])
+        x = self.layer4(x)  # torch.Size([1, 2048, 7, 7])
         x = self.attnpool(x)
 
         return x
+
     # ADDED
     def forward_attention(self, x: torch.Tensor):
         def stem(x):
@@ -182,23 +182,20 @@ class ModifiedResNet(nn.Module):
         x = self.layer1(x)
         x = self.layer2(x)
         x = self.layer3(x)
-        x = self.layer4(x) # 2048
+        x = self.layer4(x)  # 2048
         # pdb.set_trace()
-        conv11_v = nn.Conv2d(2048,2048,kernel_size=1) # 2048 2048 1 1
+        conv11_v = nn.Conv2d(2048, 2048, kernel_size=1)  # 2048 2048 1 1
         conv11_v.weight.data = self.attnpool.v_proj.weight.unsqueeze(-1).unsqueeze(-1)
         conv11_v.bias.data = self.attnpool.v_proj.bias
         # conv11_v.bias = self.attnpool.v_proj.bias
 
-
-        conv11_v2 = nn.Conv2d(2048,1024,kernel_size=1)
+        conv11_v2 = nn.Conv2d(2048, 1024, kernel_size=1)
         conv11_v2.weight.data = self.attnpool.c_proj.weight.unsqueeze(-1).unsqueeze(-1)
         conv11_v2.bias.data = self.attnpool.c_proj.bias
 
-
         xx = conv11_v(x)
-        xxx=conv11_v2(xx) #torch.Size([1, 1024, 7, 7])
+        xxx = conv11_v2(xx)  # torch.Size([1, 1024, 7, 7])
         return xxx
-
 
     def forward_each_layer(self, x):
         # 输出每层特征
@@ -214,7 +211,7 @@ class ModifiedResNet(nn.Module):
         x2 = self.layer2(x1)
         x3 = self.layer3(x2)
         x4 = self.layer4(x3)
-        return [x1,x2,x3,x4]
+        return [x1, x2, x3, x4]
 
     def forward_attention_fss(self, x: torch.Tensor):
         def stem(x):
@@ -230,7 +227,7 @@ class ModifiedResNet(nn.Module):
         x2 = self.layer3(x1)
         x3 = self.layer4(x2)
 
-        return [x1,x2,x3]
+        return [x1, x2, x3]
 
 
 class LayerNorm(nn.LayerNorm):
@@ -265,13 +262,13 @@ class ResidualAttentionBlock(nn.Module):
         self.attn_mask = self.attn_mask.to(dtype=x.dtype, device=x.device) if self.attn_mask is not None else None
         return self.attn(x, x, x, need_weights=False, attn_mask=self.attn_mask)[0]
 
-    def attention_weight(self, x: torch.Tensor): # ADDED
+    def attention_weight(self, x: torch.Tensor):  # ADDED
         self.attn_mask = self.attn_mask.to(dtype=x.dtype, device=x.device) if self.attn_mask is not None else None
         return self.attn(x, x, x, need_weights=True, attn_mask=self.attn_mask)[1]
 
-    def forward(self, x: torch.Tensor, return_attention: bool=False): # MODIFIED
-        if return_attention: # ADDED
-            return self.attention_weight(self.ln_1(x)) # ADDED
+    def forward(self, x: torch.Tensor, return_attention: bool = False):  # MODIFIED
+        if return_attention:  # ADDED
+            return self.attention_weight(self.ln_1(x))  # ADDED
 
         x = x + self.attention(self.ln_1(x))
         x = x + self.mlp(self.ln_2(x))
@@ -294,7 +291,6 @@ class Transformer(nn.Module):
             if index == len(self.resblocks) - 1:
                 return layer(x, return_attention=True)
             x = layer(x)
-
 
 
 class VisualTransformer(nn.Module):
@@ -464,8 +460,7 @@ class CLIP(nn.Module):
 
         return x
 
-
-    def get_text_features(self,text):
+    def get_text_features(self, text):
         self.text = text
 
     def forward(self, image, text=None, softmax=True):
@@ -477,7 +472,7 @@ class CLIP(nn.Module):
             text_features = self.encode_text(text)
 
         # normalized features
-        image_features = image_features / image_features.norm(dim=-1, keepdim=True) # 1024d
+        image_features = image_features / image_features.norm(dim=-1, keepdim=True)  # 1024d
         text_features = text_features / text_features.norm(dim=-1, keepdim=True)
 
         if softmax:
@@ -544,7 +539,6 @@ def build_model(state_dict: dict):
         image_resolution, vision_layers, vision_width, vision_patch_size,
         context_length, vocab_size, transformer_width, transformer_heads, transformer_layers
     )
-
 
     for key in ["input_resolution", "context_length", "vocab_size"]:
         if key in state_dict:
