@@ -151,10 +151,18 @@ Create a directory '../Datasets_HSN' for the above three few-shot segmentation d
 ## BibTeX
 If you use this code for your research, please consider citing:
 ````BibTeX
-@InProceedings{Wang2022iterative,
-    title={Iterative Few-shot Semantic Segmentation from Image Label Text},
-    author={Haohan Wang, Liang Liu, Wuhao Zhang, Jiangning Zhang, Zhenye Gan, Yabiao Wang, Chengjie Wang, Haoqian Wang},
-    booktitle={International Joint Conference on Artificial Intelligence (IJCAI)},
-    year={2022}
+@inproceedings{ijcai2022p193,
+  title     = {Iterative Few-shot Semantic Segmentation from Image Label Text},
+  author    = {Wang, Haohan and Liu, Liang and Zhang, Wuhao and Zhang, Jiangning and Gan, Zhenye and Wang, Yabiao and Wang, Chengjie and Wang, Haoqian},
+  booktitle = {Proceedings of the Thirty-First International Joint Conference on
+               Artificial Intelligence, {IJCAI-22}},
+  publisher = {International Joint Conferences on Artificial Intelligence Organization},
+  editor    = {Lud De Raedt},
+  pages     = {1385--1392},
+  year      = {2022},
+  month     = {7},
+  note      = {Main Track},
+  doi       = {10.24963/ijcai.2022/193},
+  url       = {https://doi.org/10.24963/ijcai.2022/193},
 }
 ````
