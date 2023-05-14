@@ -125,7 +125,7 @@ Create a directory '../Datasets_HSN' for the above three few-shot segmentation d
 ## Testing
 
 > ### 1. PASCAL-5<sup>i</sup>
-> Pretrained models with tensorboard logs are available on our [[Google Drive](https://drive.google.com/drive/folders/1z4KgjgOu--k6YuIj3qWrGg264GRcMis2?usp=sharing)].
+> Pretrained models with tensorboard logs are available on our [[Google Drive](https://drive.google.com/drive/folders/1fB3_jUEw972lDZIs3_S7lj2F5rZVq4Nu?usp=sharing)].
 > ```bash
 > python test.py --backbone {vgg16, resnet50} 
 >                --fold {0, 1, 2, 3} 
@@ -136,7 +136,7 @@ Create a directory '../Datasets_HSN' for the above three few-shot segmentation d
 
 
 > ### 2. COCO-20<sup>i</sup>
-> Pretrained models with tensorboard logs are available on our [[Google Drive](https://drive.google.com/drive/folders/1WpwmCQzxTWhJD5aLQhsgJASaoxxqmFUk?usp=sharing)].
+> Pretrained models with tensorboard logs are available on our [[Google Drive](https://drive.google.com/drive/folders/1fB3_jUEw972lDZIs3_S7lj2F5rZVq4Nu?usp=sharing)].
 > ```bash
 > python test.py --backbone {vgg16, resnet50} 
 >                --fold {0, 1, 2, 3} 
